@@ -41,6 +41,11 @@ function run-coverage-report {
   docker run -it -v $(pwd):/app --volumes-from sbt-cache -w /app ${DOCKER_IMAGE} activator test-coverage
 }
 
+function run-activator-ui {
+    pull-docker-image
+    docker run -it -p 0.0.0.0:8888:8888 -v ${pwd}:/app --volumes-from sbt-cache -w /app ${DOCKER_IMAGE} activator ui
+}
+
 function run-custom {
   if [ "$#" -eq 0 ]; then
     print-usage
@@ -63,6 +68,7 @@ function main {
                 start) start-the-app ;;
                  test) run-unit-tests ;;
              coverage) run-coverage-report ;;
+                   ui) run-activator-ui ;;
                custom) run-custom ${@:2} ;;
                     *) print-usage; exit 3 ;;
     esac
