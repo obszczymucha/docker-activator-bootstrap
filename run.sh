@@ -43,7 +43,9 @@ function run-coverage-report {
 
 function run-activator-ui {
     pull-docker-image
-    docker run -it -p 0.0.0.0:8888:8888 -v ${pwd}:/app --volumes-from sbt-cache -w /app ${DOCKER_IMAGE} activator ui
+    echo "Cleaning up..."
+    docker run --volumes-from sbt-cache -w /app obszczymucha/activator rm /root/.activator/1.3.10/.currentpid
+    docker run -it -p 8888:8888 -v $(pwd):/app --volumes-from sbt-cache -w /app ${DOCKER_IMAGE} activator -Dhttp.address=0.0.0.0 ui
 }
 
 function run-custom {
