@@ -28,24 +28,24 @@ function pull-docker-image {
 
 function start-the-app {
   pull-docker-image
-  docker run -it -p 80:9000 -v $(pwd):/app --volumes-from sbt-cache -w /app ${DOCKER_IMAGE} activator start
+  docker run -it -p 80:9000 -v $(pwd)/app:/app --volumes-from sbt-cache -w /app ${DOCKER_IMAGE} activator start
 }
 
 function run-unit-tests {
   pull-docker-image
-  docker run -it -v $(pwd):/app --volumes-from sbt-cache -w /app ${DOCKER_IMAGE} activator ~test
+  docker run -it -v $(pwd)/app:/app --volumes-from sbt-cache -w /app ${DOCKER_IMAGE} activator ~test
 }
 
 function run-coverage-report {
   pull-docker-image
-  docker run -it -v $(pwd):/app --volumes-from sbt-cache -w /app ${DOCKER_IMAGE} activator test-coverage
+  docker run -it -v $(pwd)/app:/app --volumes-from sbt-cache -w /app ${DOCKER_IMAGE} activator test-coverage
 }
 
 function run-activator-ui {
     pull-docker-image
     echo "Cleaning up..."
-    docker run --volumes-from sbt-cache -w /app obszczymucha/activator rm /root/.activator/1.3.10/.currentpid
-    docker run -it -p 8888:8888 -v $(pwd):/app --volumes-from sbt-cache -w /app ${DOCKER_IMAGE} activator -Dhttp.address=0.0.0.0 ui
+    docker run --volumes-from sbt-cache obszczymucha/activator rm /root/.activator/1.3.10/.currentpid
+    docker run -it -p 8888:8888 -v $(pwd)/app:/app --volumes-from sbt-cache ${DOCKER_IMAGE} activator -Dhttp.address=0.0.0.0 ui
 }
 
 function run-custom {
@@ -55,7 +55,7 @@ function run-custom {
   fi
 
   pull-docker-image
-  docker run -it -v $(pwd):/app --volumes-from sbt-cache -w /app ${DOCKER_IMAGE} activator $@
+  docker run -it -v $(pwd)/app:/app --volumes-from sbt-cache -w /app ${DOCKER_IMAGE} activator $@
 }
 
 function main {
